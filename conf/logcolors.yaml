@@ -1,0 +1,20 @@
+# Available colors are:
+#  white
+#  blue
+#  cyan
+#  green
+#  yellow
+#  red
+#  magenta
+   -
+      level: "DEBUG"
+      color: "cyan"
+   -
+      level: "INFO"
+      color: "green"
+   -
+      level: "WARN"
+      color: "yellow"
+   -
+      level: "ERROR"
+      color: "red"
