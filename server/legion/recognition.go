@@ -8,12 +8,12 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"net/url"
 	"os"
 	"path/filepath"
-	"net/textproto"
 
-	"github.com/Novetta/go.logging"
+	logging "github.com/Novetta/go.logging"
 )
 
 var (
@@ -67,44 +67,38 @@ type SuccessResponse struct {
 	Time        string `json:"time"`
 }
 
-// Requires the md5Hash that will find the image
 func UploadImage(md5Hash string) error {
-	logging.Info("md5Hash: %s", md5Hash)
 	// Get image file path
-	fPath, fName, err := CalcFilePathAndCheckExists(md5Hash, fmt.Sprintf("%s.jpg", md5Hash))
-
-	// Create multipart form
-	buf := &bytes.Buffer{}
-	writer := multipart.NewWriter(buf)
-	form, err := writer.CreateFormFile("image", fName)
+	fileImgPath, fileImgName, err := calculateFilePathAndName(md5Hash, md5Hash+".jpg")
 	if err != nil {
-		return fmt.Errorf("Error creating form:  %+v", err)
+		return fmt.Errorf("Could not determine image file path for %s: %+v", md5Hash, err)
 	}
 
-	partHeader := textproto.MIMEHeader{}
-	disp := fmt.Sprint("form-data; name=%s; filename=%s", fName)
-	partHeader.Add("Content-Disposition", disp)
-	partHeader.Add("Content-Type","image/jpeg")
-	part, err := writer.CreatePart(partHeader)
+	// Does image file exist?
+	TgtFQP := filepath.Join(fileImgPath, fileImgName)
+	if _, err := os.Stat(TgtFQP); os.IsNotExist(err) {
+		return fmt.Errorf("Specified image file does not exist: %s", TgtFQP)
+	}
 
-	logging.Info("Calculated Filepath: %s%s", fPath, fName)
 	// Get image bytes
-	fBytes, err := readFile(filepath.Join(fPath, fName))
+	fileBytes, err := readFile(TgtFQP)
 	if err != nil {
 		return fmt.Errorf("Error getting file bytes:  %+v", err)
 	}
 
+	// Create multipart form with the mime header "image/jpeg"
+	buf := &bytes.Buffer{}
+	writer := multipart.NewWriter(buf)
+	form, err := CreateImageFormFile(writer, fmt.Sprintf("%s.jpg", md5Hash))
+
 	// Copy bytes into form
-	_, err = io.Copy(form, bytes.NewReader(fBytes))
+	_, err = io.Copy(form, bytes.NewReader(fileBytes))
 	if err != nil {
 		return fmt.Errorf("Error copying image to form:  %+v", err)
 	}
 
 	// Get content type from form
-	// contentType := writer.FormDataContentType()
-	boundary := writer.Boundary()
-	contentType := fmt.Sprintf("image/jpeg; boundary=%s", boundary)
-	logging.Info("Content Type: %s", contentType)
+	contentType := writer.FormDataContentType()
 
 	// Close writer
 	err = writer.Close()
@@ -118,7 +112,6 @@ func UploadImage(md5Hash string) error {
 		return fmt.Errorf("Error parsing url:  %+v", err)
 	}
 	u.Path = "/upload"
-	logging.Info("Recognition URL: %s", u)
 
 	// Post to recognition service
 	resp, err := http.Post(u.String(), contentType, buf)
@@ -139,17 +132,25 @@ func UploadImage(md5Hash string) error {
 		return fmt.Errorf("Error decoding response from recognition: %+v", err)
 	}
 
-	// Update file recognition
 	if len(rr.Categories) > 0 {
-		// recognition := rr.Categories[0].Category
-		// err = SetFileRecognition(md5Hash, recognition)
-		for k, v := range rr.Categories {
-			fmt.Printf("%s -> %s\n", k, v)
-		}
-		// if err != nil {
-		// 	return fmt.Errorf("Error setting file recognition: %+v", err)
-		// }
+		logging.Info("Recogniton Response Cagtegory: %s ", rr.Categories[0].Category)
 	}
 
+	// Update file recognition
+	// if len(rr.Categories) > 0 {
+	// 	recognition := rr.Categories[0].Category
+	// 	err = SetFileRecognition(md5Hash, recognition)
+	// 	if err != nil {
+	// 		return fmt.Errorf("Error setting file recognition: %+v", err)
+	// 	}
+	// }
+
 	return nil
+}
+
+func CreateImageFormFile(w *multipart.Writer, filename string) (io.Writer, error) {
+	h := make(textproto.MIMEHeader)
+	h.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, "image", filename))
+	h.Set("Content-Type", "image/jpeg")
+	return w.CreatePart(h)
 }

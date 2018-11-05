@@ -12,7 +12,7 @@ import (
 
 const (
 	//files
-	testingDataDirEnv = "TESTING_DATA"
+	testingDataDirEnv        = "TESTING_DATA"
 	fileStoreLocationEnv     = "TESTING_FILE_LOCATION"
 	fileStoreTempLocationEnv = "TESTING_FILE_TEMP_LOCATION"
 )

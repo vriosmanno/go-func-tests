@@ -37,7 +37,15 @@
   version = "v1.0.6"
 
 [[projects]]
-  digest = "1:c83053d809c5d8978cc2ee50e4591f498d254b1140a501b94f0616b8ed600fed"
+  digest = "1:3afb239132bb87da760e75abb3661ddcd7fff0f108471a4a5bec11866888077e"
+  name = "github.com/Novetta/go.uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ba517dc99da41720ff015e1733a6efe947b1e982"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:5bc3d9601ecfd30cf870f85589a018bb9ff1ec00bcb1f7063984c075812908ff"
   name = "github.com/Novetta/networking"
   packages = [
     ".",
@@ -46,11 +54,11 @@
     "wsclient",
   ]
   pruneopts = "UT"
-  revision = "9e2c56ae33a939314a16c0e48694a01b30d27415"
-  version = "v1.0.11"
+  revision = "f87f3868eea4f86f36fa1e5ea16f4deec773377c"
+  version = "v1.0.12"
 
 [[projects]]
-  digest = "1:0780f5e029ed8c6de9418e8377b0adfa5cbde8c4e978be21d0ac121c71a73917"
+  digest = "1:77e330383884468579653df1c399891bb1b28b59feb2071c27f7cd730cca2be1"
   name = "github.com/Novetta/security"
   packages = [
     ".",
@@ -60,8 +68,8 @@
     "secutils",
   ]
   pruneopts = "UT"
-  revision = "1fc3bf137bbb31a39bbe0f12f4517d73c58c8767"
-  version = "v1.0.16"
+  revision = "9c0ffff54a2b83af8211d4ea1fbe8433c1b65b60"
+  version = "v1.0.17"
 
 [[projects]]
   branch = "master"
@@ -105,7 +113,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d21f3471df3c4109c9b7c5569363a082b9fcde4fea49e4ce332ad307cfc4e359"
+  digest = "1:64609c53991a461bd1ebd4d398cc930be8ba5d441d2a02b73f94c40a66ef93db"
   name = "github.com/gocql/gocql"
   packages = [
     ".",
@@ -114,7 +122,7 @@
     "internal/streams",
   ]
   pruneopts = "UT"
-  revision = "44e29ed5b8a4b4fff39d7ebaa19976c6f852075b"
+  revision = "a84ce58083d3d907fb0d94290d088a1fcd9cd858"
 
 [[projects]]
   branch = "master"
@@ -191,15 +199,15 @@
     "ipv4",
   ]
   pruneopts = "UT"
-  revision = "49bb7cea24b1df9410e1712aa6433dae904ff66a"
+  revision = "c10e9556a7bc0e7c942242b606f0acf024ad5d6a"
 
 [[projects]]
   branch = "master"
-  digest = "1:0a40b0bdd57a93e741d8557465be3a2edeec408e9b6399586ad65bbe8e355796"
+  digest = "1:35560529f5721d65f36dc23aa15fbf7306c5091cdc3f29f65881af5031b80cc8"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "fa43e7bc11baaae89f3f902b2b4d832b68234844"
+  revision = "9b800f95dbbc54abff0acf7ee32d88ba4e328c89"
 
 [[projects]]
   digest = "1:2d1fbdc6777e5408cabeb02bf336305e724b925ff4546ded0fa8715a7267922a"
@@ -223,6 +231,7 @@
   input-imports = [
     "github.com/Novetta/go.datatypes",
     "github.com/Novetta/go.logging",
+    "github.com/Novetta/go.uuid",
     "github.com/Novetta/networking/httputil",
     "github.com/Novetta/security/kerbtypes",
     "github.com/martini-contrib/encoder",
